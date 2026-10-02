@@ -1,4 +1,4 @@
-# Automated Student Repository Creation from Template
+<!-- # Automated Student Repository Creation from Template
 
 This repository contains a GitHub Actions workflow and a Python script to automatically create individual student assignment/project repositories from a template repository within a GitHub Organization. It reads a CSV roster, generates private repositories for each student, and adds the student as a collaborator with push access.
 
@@ -332,4 +332,78 @@ The workflow triggers manually via `workflow_dispatch`; you can also schedule it
 
 ---
 
-By following these instructions, you can automate the creation of student repositories with minimal effort and ensure consistency across your class or project cohort.
+By following these instructions, you can automate the creation of student repositories with minimal effort and ensure consistency across your class or project cohort. -->
+
+# Automated course assignment repos
+
+A replacement for GitHub Classroom, built on GitHub Actions. You describe the course in `course.yml` and list students in a roster CSV. The workflow keeps GitHub matching those two files:
+
+- **Adding a student or an assignment** sets up the new repos within a minute of your commit.
+- **Assignments with a release date** stay dormant until that date, then the repos are created.
+- **Expired invitations** (GitHub expires them after 7 days) are re-sent automatically.
+- **At the deadline**, every student drops to read-only, unless they have an extension.
+
+The workflow runs whenever you change `course.yml` or the roster, and once an hour. Each run checks every student and fixes only what's missing, so it's always safe to run again. Every run ends with a summary in the Actions tab that lists anything not yet done: pending invitations, locks and failures.
+
+## One-time setup
+
+1. **Keep this repo private, inside the course organization.** The roster contains student names.
+2. **Mark each starter repo as a template.** In the starter repo, go to Settings → General → _Template repository_.
+3. **Set the organization's base permission to _No permission_.** Go to Org settings → Member privileges. If org members get write access by default, locking at the deadline has no effect on them.
+4. **Add a token secret named `GH_ADMIN_TOKEN`.** Go to Settings → Secrets and variables → Actions. Create the token as an org owner. A fine-grained token for the organization needs **Administration: read and write** and **Contents: read** on all its repositories. A classic token with the `repo` scope also works.
+5. **Edit `course.yml`** to set your organization and assignments.
+
+## course.yml
+
+```yaml
+organization: nic-dgl123-26FA-cvs1
+timezone: America/Vancouver
+roster: class_roster.csv
+course_topic: dgl123-fall-2026
+
+assignments:
+  - template: php-project-26FA # repos: php-project-26FA-<username>
+    deadline: 2026-12-05 23:59
+
+  - template: php-a2-26FA
+    release: 2026-10-14 09:00 # repos appear on this date
+    deadline: 2026-10-28 23:59
+    extensions:
+      some-username: 2026-10-31 23:59
+```
+
+| Field                 | Meaning                                                                        |
+| --------------------- | ------------------------------------------------------------------------------ |
+| `template`            | Template repo in the organization (required)                                   |
+| `prefix`              | Student repos are named `<prefix>-<username>`. Defaults to the template name   |
+| `visibility`          | `private` (default) or `public`. Public repos never include the student's name |
+| `release`             | Date the repos are created. If blank, they're created right away               |
+| `deadline`            | Date students lose write access. A date with no time means 23:59 that day      |
+| `lock_after_deadline` | Set to `false` to keep write access after the deadline                         |
+| `extensions`          | Per-student deadlines, keyed by GitHub username                                |
+
+## Roster
+
+The roster is a CSV with a `github_username` column. A `first_name` or `name` column is optional and is used in the repo description of private repos. Exports from Excel and Google Sheets work as-is.
+
+```csv
+first_name,github_username
+Jane Smith,janesmith
+```
+
+**Use students' GitHub usernames, not college IDs.** If an ID happens to match someone else's GitHub account, that person gets invited. The workflow flags usernames that don't exist on GitHub, missing usernames and duplicates.
+
+## Day-to-day
+
+| You want to…                        | Do this                                                                                                                                                                |
+| ----------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Release a new assignment            | Add it to `course.yml`, with a `release` date if it shouldn't open yet                                                                                                 |
+| Add a late enrolment                | Add a row to the roster                                                                                                                                                |
+| Chase students who haven't accepted | Nothing. Expired invitations are re-sent each hour, and pending ones are listed in the run summary                                                                     |
+| Give an extension                   | Add the student under that assignment's `extensions`                                                                                                                   |
+| Reopen an assignment                | Move its `deadline` later, or set `lock_after_deadline: false`                                                                                                         |
+| Preview before changing anything    | Go to Actions → **Sync Student Repos** → Run workflow. _Dry run_ is ticked by default. Fill in _now_ (e.g. `2026-12-06 09:00`) to preview what will lock at a deadline |
+
+Locking happens on the first hourly run after the deadline, so allow up to an hour, plus any delay on GitHub's side. Students are never removed and repos are never deleted. Taking someone off the roster only stops new repos being created for them.
+
+**Run status.** A run you start, or one triggered by a commit, turns red if any student couldn't be set up, so you notice a bad username right after adding it. The hourly runs only report problems in the summary and don't fail, so they won't email you about the same issue every hour.

@@ -1,0 +1,22 @@
+# Everything about the course lives here. Edit this file (and the roster),
+# commit, and the workflow brings GitHub in line with it automatically.
+
+organization: nic-dgl123-26FA-cvs1
+timezone: America/Vancouver        # how release dates and deadlines are read
+roster: class_roster.csv           # needs a github_username column
+course_topic: dgl123-fall-2026     # tag added to every student repo
+
+assignments:
+  - template: php-project-26FA     # template repo in the organization
+    # prefix: php-project-26FA     # student repos are <prefix>-<username>; defaults to the template name
+    # visibility: private          # private (default) or public
+    # release: 2026-09-08          # repos are created from this date on (default: right away)
+    # deadline: 2026-12-05 23:59   # after this, students drop to read-only
+    # lock_after_deadline: true    # set to false to keep write access after the deadline
+    # extensions:                  # per-student deadlines
+    #   some-username: 2026-12-08 23:59
+
+  # Add the next assignment here. It stays dormant until its release date.
+  # - template: php-a2-26FA
+  #   release: 2026-10-14 09:00
+  #   deadline: 2026-10-28 23:59
