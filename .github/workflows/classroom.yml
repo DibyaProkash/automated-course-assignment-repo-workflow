@@ -1,31 +1,39 @@
 name: Sync Student Repos
 
 on:
-  # 1. You edit the roster or course.yml -> new students / assignments are set up at once.
+  # You edit a course file or a roster -> only the sections affected are set up, right away.
   push:
     branches: [main]
-    paths: [course.yml, "*.csv", classroom.py]
+    paths:
+      - "courses/**"
+      - "rosters/**"
+      - classroom.py
+      - requirements.txt
+      - .github/workflows/classroom.yml
 
-  # 2. Every hour: release scheduled assignments, re-send expired invitations,
-  #    and lock repos whose deadline has passed.
   schedule:
+    # Hourly: release assignments and lock repos whose time has just come.
+    # Usually finds nothing to do and finishes in seconds.
     - cron: "17 * * * *"
+    # Daily, about 6 am Pacific: full check of every section,
+    # re-sends expired invitations and repairs anything missed.
+    - cron: "7 13 * * *"
 
-  # 3. By hand, from the Actions tab.
+  # By hand, from the Actions tab.
   workflow_dispatch:
     inputs:
       dry_run:
         description: Preview only, change nothing
         type: boolean
         default: true
-      only_assignment:
-        description: Limit to one assignment (template name); blank = all
+      only:
+        description: Limit to a course (dgl123) or section (dgl123/cvs1); blank = everything
         default: ""
       now:
-        description: Pretend it's this time, e.g. 2026-12-06 09:00 (use with dry run to preview a lock)
+        description: Pretend it's this time, e.g. 2026-12-06 09:00 (with dry run, previews a lock)
         default: ""
 
-# A push and the hourly run never work on the same repos at the same time.
+# Runs never overlap; a second one waits for the first to finish.
 concurrency:
   group: sync-student-repos
   cancel-in-progress: false
@@ -33,9 +41,21 @@ concurrency:
 jobs:
   sync:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # needed to see which files a push changed
+
+      - name: Work out which files changed
+        if: github.event_name == 'push'
+        run: |
+          if git cat-file -e "${{ github.event.before }}^{commit}" 2>/dev/null; then
+            git diff --name-only "${{ github.event.before }}" "${{ github.sha }}" > "$RUNNER_TEMP/changed.txt"
+          else
+            echo ALL > "$RUNNER_TEMP/changed.txt"
+          fi
+          cat "$RUNNER_TEMP/changed.txt"
 
       - uses: actions/setup-python@v5
         with:
@@ -45,10 +65,12 @@ jobs:
 
       - run: pip install -r requirements.txt
 
-      - name: Sync repos with course.yml and the roster
+      - name: Sync repos with the course files and rosters
         env:
           GH_ADMIN_TOKEN: ${{ secrets.GH_ADMIN_TOKEN }}
+          MODE: ${{ github.event.schedule == '17 * * * *' && 'due' || 'full' }}
           DRY_RUN: ${{ inputs.dry_run || 'false' }}
-          ONLY_ASSIGNMENT: ${{ inputs.only_assignment }}
+          ONLY: ${{ inputs.only }}
           NOW: ${{ inputs.now }}
+          CHANGED_FILES_PATH: ${{ github.event_name == 'push' && format('{0}/changed.txt', runner.temp) || '' }}
         run: python classroom.py

@@ -1,0 +1,79 @@
+# DGL 114: Introduction to Mobile App Development
+# Everything about this course lives here. Edit this file (or a roster),
+# commit, and the workflow brings GitHub in line with it automatically.
+
+course: "DGL 114: Introduction to Mobile App Development" # name shown in the run summary
+course_topic: dgl114-fall-2026 # tag added to every student repo in this course
+timezone: America/Vancouver # how release dates and deadlines are read
+# template_org: nic-dgl114-templates     # optional: one org holding the templates for ALL sections.
+archive_on: 2027-01-15 # end of term: archive every repo in this course (read-only
+# for everyone, you too). Set per assignment or per section too.
+
+# Leave out to use each section's own organization.
+
+# ---------------------------------------------------------------------------
+# ASSIGNMENTS: written once, every section below gets them.
+# Only the "template:" line starts with a dash; the lines under it are indented.
+#
+# None yet. To add one: create the starter repo in nic-dgl114-fall-2026, mark it
+# as a template (Settings → General → Template repository), then replace "[]"
+# below with an entry like the commented example.
+# ---------------------------------------------------------------------------
+assignments:
+  # Semester-long Weekly Activity Checklist assignments. Uncomment to give every student their own copy.
+  - template: Weekly-Activity-Checklists # template repo (in the section's org, or template_org)
+    prefix: Weekly-Activity-Checklists # student repos are <prefix>-<username>; defaults to the template name
+    visibility: private # private (default) or public
+    release: 2026-09-11 00:01 # repos are created from this date on (default: right away)
+    # deadline: 2026-10-28 23:59 # after this, students drop to read-only
+    lock_after_deadline: false # set to false to keep write access after the deadline
+    # archive_on: 2027-01-15       # archive this assignment's repos (default: the course's archive_on)
+  #   extensions:                    # per-student deadlines (GitHub username: new deadline)
+  #     some-username: 2026-10-31 23:59
+  #
+  # Coding Assignment-1. Uncomment to give every student their own copy.
+  - template: dgl114-coding-assn1
+    prefix: dgl114-coding-assn1
+    visibility: private
+    release: 2026-09-18 00:01
+    deadline: 2026-10-15 23:59
+    lock_after_deadline: true
+    # extensions:                  # per-student deadlines (GitHub username: new deadline)
+    #   some-username: 2026-12-08 23:59
+
+    # Weekly Laracast activity tracker. Uncomment to give every student their own copy.
+  - template: dgl114-coding-assn2
+    prefix: dgl114-coding-assn2
+    visibility: private
+    release: 2026-10-16 08:40
+    deadline: 2026-11-05 23:59
+    lock_after_deadline: true
+    # extensions:                  # per-student deadlines (GitHub username: new deadline)
+    #   some-username: 2026-12-08 23:59
+
+    # Weekly Laracast activity tracker. Uncomment to give every student their own copy.
+  - template: dgl114-coding-assn3
+    prefix: dgl114-coding-assn3
+    visibility: private
+    release: 2026-11-06 08:40
+    deadline: 2026-12-03 23:59
+    lock_after_deadline: true
+    # extensions:                  # per-student deadlines (GitHub username: new deadline)
+    #   some-username: 2026-12-08 23:59
+
+# ---------------------------------------------------------------------------
+# SECTIONS: one entry per section, each with its own organization and roster.
+# ---------------------------------------------------------------------------
+sections:
+  - name: cvs1 # short name; repos get a topic like dgl114-cvs1
+    organization: nic-dgl114-fall-2026 # GitHub org for this section
+    roster: rosters/dgl114-cvs1.csv # this section's students
+
+
+  # A second section. Copy this block, change the three lines, add its roster.
+  # - name: cvs2
+  #   organization: nic-dgl114-26FA-cvs2      # its own org, or the same org as cvs1
+  #   roster: rosters/dgl114-cvs2.csv
+  #   overrides:                              # optional: only where this section differs
+  #     dgl114-a1:                            #   which assignment (template name)
+  #       deadline: 2026-10-29 23:59

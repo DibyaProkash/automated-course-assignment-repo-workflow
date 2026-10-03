@@ -1,0 +1,62 @@
+# DGL 123: Introduction to PHP
+# Everything about this course lives here. Edit this file (or a roster),
+# commit, and the workflow brings GitHub in line with it automatically.
+
+course: "DGL 123: Introduction to PHP" # name shown in the run summary
+course_topic: dgl123-fall-2026 # tag added to every student repo in this course
+timezone: America/Vancouver # how release dates and deadlines are read
+# template_org: nic-dgl123-26FA-templates  # optional: one org holding the templates for ALL sections.
+archive_on: 2027-01-15 # end of term: archive every repo in this course (read-only
+# for everyone, you too). Set per assignment or per section too.
+# Leave out to use each section's own organization.
+
+# ---------------------------------------------------------------------------
+# ASSIGNMENTS: written once, every section below gets them.
+# Only the "template:" line starts with a dash; the lines under it are indented.
+# ---------------------------------------------------------------------------
+assignments:
+  # Semester-long PHP Course Project. Uncomment to give every student their own copy.
+  - template: php-project-26FA # template repo (in the section's org, or template_org)
+    prefix: php-project-26FA # student repos are <prefix>-<username>; defaults to the template name
+    visibility: private # private (default) or public
+    release: 2026-09-21 00:01 # repos are created from this date on (default: right away)
+    deadline: 2026-12-06 23:59 # after this, students drop to read-only
+    lock_after_deadline: true # set to false to keep write access after the deadline
+    # extensions:                  # per-student deadlines (GitHub username: new deadline)
+    #   some-username: 2026-12-08 23:59
+
+  # Weekly Laracast activity tracker. Uncomment to give every student their own copy.
+  - template: weekly-laracast-walthrough
+    prefix: weekly-laracast-walthrough
+    visibility: private
+    release: 2026-09-14 00:01
+    # deadline: 2026-12-06 23:59
+    lock_after_deadline: false
+    # extensions:                  # per-student deadlines (GitHub username: new deadline)
+    #   some-username: 2026-12-08 23:59
+
+  # Add the next assignment here. It stays dormant until its release date.
+  # - template: php-a2-26FA
+  #   release: 2026-10-14 09:00
+  #   deadline: 2026-10-28 23:59
+
+# ---------------------------------------------------------------------------
+# SECTIONS: one entry per section, each with its own organization and roster.
+# ---------------------------------------------------------------------------
+sections:
+  - name: cvs1 # short name; repos get a topic like dgl123-cvs1
+    organization: nic-dgl123-26FA-cvs1 # GitHub org for this section
+    roster: rosters/dgl123-cvs1.csv # this section's students
+
+
+  # A second section. Copy this block, change the three lines, add its roster.
+  # - name: cvs2
+  #   organization: nic-dgl123-26FA-cvs2      # its own org, or the same org as cvs1
+  #   roster: rosters/dgl123-cvs2.csv
+  #   overrides:                              # optional: only where this section differs
+  #     php-project-26FA:                     #   which assignment (template name)
+  #       release: 2026-09-22                 #   e.g. this section meets a day later
+  #       deadline: 2026-12-07 23:59
+  #       # lock_after_deadline: false
+  #       # extensions:
+  #       #   some-username: 2026-12-10 23:59
